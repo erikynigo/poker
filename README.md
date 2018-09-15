@@ -10,6 +10,7 @@ Dependency is resolved in the pom.xml file.
 Example usage is provided in src/main/java/com/poker/Main.java.
 
 Running the example:
+
     Command line:
         Navigate to src/main/java
         javac com/poker/Main.java
