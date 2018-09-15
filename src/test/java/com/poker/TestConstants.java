@@ -15,71 +15,74 @@ import java.util.ArrayList;
 @SuppressWarnings("Duplicates")
 public class TestConstants
 {
+    // Highest possible score achieved by a royal flush
+    public static float HIGHEST_SCORE = 915.43195f;
+
     // Cards
-    private static Card ACE_OF_HEARTS = new Card(Rank.ACE, Suit.HEART);
-    private static Card ACE_OF_DIAMONDS = new Card(Rank.ACE, Suit.DIAMOND);
-    private static Card ACE_OF_SPADES = new Card(Rank.ACE, Suit.SPADE);
-    private static Card ACE_OF_CLUBS = new Card(Rank.ACE, Suit.CLUB);
+    public static Card ACE_OF_HEARTS = new Card(Rank.ACE, Suit.HEART);
+    public static Card ACE_OF_DIAMONDS = new Card(Rank.ACE, Suit.DIAMOND);
+    public static Card ACE_OF_SPADES = new Card(Rank.ACE, Suit.SPADE);
+    public static Card ACE_OF_CLUBS = new Card(Rank.ACE, Suit.CLUB);
 
-    private static Card KING_OF_HEARTS = new Card(Rank.KING, Suit.HEART);
-    private static Card KING_OF_DIAMONDS = new Card(Rank.KING, Suit.DIAMOND);
-    private static Card KING_OF_SPADES = new Card(Rank.KING, Suit.SPADE);
-    private static Card KING_OF_CLUBS = new Card(Rank.KING, Suit.CLUB);
+    public static Card KING_OF_HEARTS = new Card(Rank.KING, Suit.HEART);
+    public static Card KING_OF_DIAMONDS = new Card(Rank.KING, Suit.DIAMOND);
+    public static Card KING_OF_SPADES = new Card(Rank.KING, Suit.SPADE);
+    public static Card KING_OF_CLUBS = new Card(Rank.KING, Suit.CLUB);
 
-    private static Card QUEEN_OF_HEARTS = new Card(Rank.QUEEN, Suit.HEART);
-    private static Card QUEEN_OF_DIAMONDS = new Card(Rank.QUEEN, Suit.DIAMOND);
-    private static Card QUEEN_OF_SPADES = new Card(Rank.QUEEN, Suit.SPADE);
-    private static Card QUEEN_OF_CLUBS = new Card(Rank.QUEEN, Suit.CLUB);
+    public static Card QUEEN_OF_HEARTS = new Card(Rank.QUEEN, Suit.HEART);
+    public static Card QUEEN_OF_DIAMONDS = new Card(Rank.QUEEN, Suit.DIAMOND);
+    public static Card QUEEN_OF_SPADES = new Card(Rank.QUEEN, Suit.SPADE);
+    public static Card QUEEN_OF_CLUBS = new Card(Rank.QUEEN, Suit.CLUB);
 
-    private static Card JACK_OF_HEARTS = new Card(Rank.JACK, Suit.HEART);
-    private static Card JACK_OF_DIAMONDS = new Card(Rank.JACK, Suit.DIAMOND);
-    private static Card JACK_OF_SPADES = new Card(Rank.JACK, Suit.SPADE);
-    private static Card JACK_OF_CLUBS = new Card(Rank.JACK, Suit.CLUB);
+    public static Card JACK_OF_HEARTS = new Card(Rank.JACK, Suit.HEART);
+    public static Card JACK_OF_DIAMONDS = new Card(Rank.JACK, Suit.DIAMOND);
+    public static Card JACK_OF_SPADES = new Card(Rank.JACK, Suit.SPADE);
+    public static Card JACK_OF_CLUBS = new Card(Rank.JACK, Suit.CLUB);
 
-    private static Card TEN_OF_HEARTS = new Card(Rank.TEN, Suit.HEART);
-    private static Card TEN_OF_DIAMONDS = new Card(Rank.TEN, Suit.DIAMOND);
-    private static Card TEN_OF_SPADES = new Card(Rank.TEN, Suit.SPADE);
-    private static Card TEN_OF_CLUBS = new Card(Rank.TEN, Suit.CLUB);
+    public static Card TEN_OF_HEARTS = new Card(Rank.TEN, Suit.HEART);
+    public static Card TEN_OF_DIAMONDS = new Card(Rank.TEN, Suit.DIAMOND);
+    public static Card TEN_OF_SPADES = new Card(Rank.TEN, Suit.SPADE);
+    public static Card TEN_OF_CLUBS = new Card(Rank.TEN, Suit.CLUB);
 
-    private static Card NINE_OF_HEARTS = new Card(Rank.NINE, Suit.HEART);
-    private static Card NINE_OF_DIAMONDS = new Card(Rank.NINE, Suit.DIAMOND);
-    private static Card NINE_OF_SPADES = new Card(Rank.NINE, Suit.SPADE);
-    private static Card NINE_OF_CLUBS = new Card(Rank.NINE, Suit.CLUB);
+    public static Card NINE_OF_HEARTS = new Card(Rank.NINE, Suit.HEART);
+    public static Card NINE_OF_DIAMONDS = new Card(Rank.NINE, Suit.DIAMOND);
+    public static Card NINE_OF_SPADES = new Card(Rank.NINE, Suit.SPADE);
+    public static Card NINE_OF_CLUBS = new Card(Rank.NINE, Suit.CLUB);
 
-    private static Card EIGHT_OF_HEARTS = new Card(Rank.EIGHT, Suit.HEART);
-    private static Card EIGHT_OF_DIAMONDS = new Card(Rank.EIGHT, Suit.DIAMOND);
-    private static Card EIGHT_OF_SPADES = new Card(Rank.EIGHT, Suit.SPADE);
-    private static Card EIGHT_OF_CLUBS = new Card(Rank.EIGHT, Suit.CLUB);
+    public static Card EIGHT_OF_HEARTS = new Card(Rank.EIGHT, Suit.HEART);
+    public static Card EIGHT_OF_DIAMONDS = new Card(Rank.EIGHT, Suit.DIAMOND);
+    public static Card EIGHT_OF_SPADES = new Card(Rank.EIGHT, Suit.SPADE);
+    public static Card EIGHT_OF_CLUBS = new Card(Rank.EIGHT, Suit.CLUB);
 
-    private static Card SEVEN_OF_HEARTS = new Card(Rank.SEVEN, Suit.HEART);
-    private static Card SEVEN_OF_DIAMONDS = new Card(Rank.SEVEN, Suit.DIAMOND);
-    private static Card SEVEN_OF_SPADES = new Card(Rank.SEVEN, Suit.SPADE);
-    private static Card SEVEN_OF_CLUBS = new Card(Rank.SEVEN, Suit.CLUB);
+    public static Card SEVEN_OF_HEARTS = new Card(Rank.SEVEN, Suit.HEART);
+    public static Card SEVEN_OF_DIAMONDS = new Card(Rank.SEVEN, Suit.DIAMOND);
+    public static Card SEVEN_OF_SPADES = new Card(Rank.SEVEN, Suit.SPADE);
+    public static Card SEVEN_OF_CLUBS = new Card(Rank.SEVEN, Suit.CLUB);
 
-    private static Card SIX_OF_HEARTS = new Card(Rank.SIX, Suit.HEART);
-    private static Card SIX_OF_DIAMONDS = new Card(Rank.SIX, Suit.DIAMOND);
-    private static Card SIX_OF_SPADES = new Card(Rank.SIX, Suit.SPADE);
-    private static Card SIX_OF_CLUBS = new Card(Rank.SIX, Suit.CLUB);
+    public static Card SIX_OF_HEARTS = new Card(Rank.SIX, Suit.HEART);
+    public static Card SIX_OF_DIAMONDS = new Card(Rank.SIX, Suit.DIAMOND);
+    public static Card SIX_OF_SPADES = new Card(Rank.SIX, Suit.SPADE);
+    public static Card SIX_OF_CLUBS = new Card(Rank.SIX, Suit.CLUB);
 
-    private static Card FIVE_OF_HEARTS = new Card(Rank.FIVE, Suit.HEART);
-    private static Card FIVE_OF_DIAMONDS = new Card(Rank.FIVE, Suit.DIAMOND);
-    private static Card FIVE_OF_SPADES = new Card(Rank.FIVE, Suit.SPADE);
-    private static Card FIVE_OF_CLUBS = new Card(Rank.FIVE, Suit.CLUB);
+    public static Card FIVE_OF_HEARTS = new Card(Rank.FIVE, Suit.HEART);
+    public static Card FIVE_OF_DIAMONDS = new Card(Rank.FIVE, Suit.DIAMOND);
+    public static Card FIVE_OF_SPADES = new Card(Rank.FIVE, Suit.SPADE);
+    public static Card FIVE_OF_CLUBS = new Card(Rank.FIVE, Suit.CLUB);
 
-    private static Card FOUR_OF_HEARTS = new Card(Rank.FOUR, Suit.HEART);
-    private static Card FOUR_OF_DIAMONDS = new Card(Rank.FOUR, Suit.DIAMOND);
-    private static Card FOUR_OF_SPADES = new Card(Rank.FOUR, Suit.SPADE);
-    private static Card FOUR_OF_CLUBS = new Card(Rank.FOUR, Suit.CLUB);
+    public static Card FOUR_OF_HEARTS = new Card(Rank.FOUR, Suit.HEART);
+    public static Card FOUR_OF_DIAMONDS = new Card(Rank.FOUR, Suit.DIAMOND);
+    public static Card FOUR_OF_SPADES = new Card(Rank.FOUR, Suit.SPADE);
+    public static Card FOUR_OF_CLUBS = new Card(Rank.FOUR, Suit.CLUB);
 
-    private static Card THREE_OF_HEARTS = new Card(Rank.THREE, Suit.HEART);
-    private static Card THREE_OF_DIAMONDS = new Card(Rank.THREE, Suit.DIAMOND);
-    private static Card THREE_OF_SPADES = new Card(Rank.THREE, Suit.SPADE);
-    private static Card THREE_OF_CLUBS = new Card(Rank.THREE, Suit.CLUB);
+    public static Card THREE_OF_HEARTS = new Card(Rank.THREE, Suit.HEART);
+    public static Card THREE_OF_DIAMONDS = new Card(Rank.THREE, Suit.DIAMOND);
+    public static Card THREE_OF_SPADES = new Card(Rank.THREE, Suit.SPADE);
+    public static Card THREE_OF_CLUBS = new Card(Rank.THREE, Suit.CLUB);
 
-    private static Card TWO_OF_HEARTS = new Card(Rank.TWO, Suit.HEART);
-    private static Card TWO_OF_DIAMONDS = new Card(Rank.TWO, Suit.DIAMOND);
-    private static Card TWO_OF_SPADES = new Card(Rank.TWO, Suit.SPADE);
-    private static Card TWO_OF_CLUBS = new Card(Rank.TWO, Suit.CLUB);
+    public static Card TWO_OF_HEARTS = new Card(Rank.TWO, Suit.HEART);
+    public static Card TWO_OF_DIAMONDS = new Card(Rank.TWO, Suit.DIAMOND);
+    public static Card TWO_OF_SPADES = new Card(Rank.TWO, Suit.SPADE);
+    public static Card TWO_OF_CLUBS = new Card(Rank.TWO, Suit.CLUB);
 
     // Example hands for quick scenario testing
     public static Hand ACE_HIGH_HAND = new Hand(new ArrayList<Card>() {{
@@ -255,5 +258,159 @@ public class TestConstants
         add(ACE_OF_CLUBS);
         add(ACE_OF_CLUBS);
         add(ACE_OF_CLUBS);
+    }});
+
+    // Same category hands with different kickers
+    public static Hand FIVE_HIGH_STRAIGHT_HAND = new Hand(new ArrayList<Card>() {{
+        add(ACE_OF_CLUBS);
+        add(TWO_OF_DIAMONDS);
+        add(THREE_OF_HEARTS);
+        add(FOUR_OF_SPADES);
+        add(FIVE_OF_CLUBS);
+    }});
+
+    // Same category hands with different kickers
+    public static Hand ACE_HIGH_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(ACE_OF_CLUBS);
+        add(JACK_OF_DIAMONDS);
+        add(EIGHT_OF_HEARTS);
+        add(FIVE_OF_CLUBS);
+        add(TWO_OF_SPADES);
+    }});
+
+    public static Hand ACE_HIGH_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(ACE_OF_CLUBS);
+        add(JACK_OF_DIAMONDS);
+        add(EIGHT_OF_HEARTS);
+        add(FIVE_OF_CLUBS);
+        add(THREE_OF_SPADES);
+    }});
+
+    public static Hand ONE_PAIR_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(TEN_OF_CLUBS);
+        add(TEN_OF_DIAMONDS);
+        add(ACE_OF_HEARTS);
+        add(KING_OF_SPADES);
+        add(QUEEN_OF_HEARTS);
+    }});
+
+    public static Hand ONE_PAIR_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(TEN_OF_CLUBS);
+        add(TEN_OF_DIAMONDS);
+        add(ACE_OF_HEARTS);
+        add(KING_OF_SPADES);
+        add(JACK_OF_DIAMONDS);
+    }});
+
+    public static Hand TWO_PAIR_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(TEN_OF_CLUBS);
+        add(TEN_OF_DIAMONDS);
+        add(NINE_OF_HEARTS);
+        add(NINE_OF_SPADES);
+        add(FIVE_OF_CLUBS);
+    }});
+
+    public static Hand TWO_PAIR_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(TEN_OF_CLUBS);
+        add(TEN_OF_DIAMONDS);
+        add(NINE_OF_HEARTS);
+        add(NINE_OF_SPADES);
+        add(KING_OF_SPADES);
+    }});
+
+    public static Hand THREE_OF_A_KIND_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(TWO_OF_DIAMONDS);
+        add(TWO_OF_HEARTS);
+        add(TWO_OF_SPADES);
+        add(QUEEN_OF_SPADES);
+        add(TEN_OF_SPADES);
+    }});
+
+    public static Hand THREE_OF_A_KIND_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(TWO_OF_DIAMONDS);
+        add(TWO_OF_HEARTS);
+        add(TWO_OF_SPADES);
+        add(JACK_OF_CLUBS);
+        add(TEN_OF_DIAMONDS);
+    }});
+
+    public static Hand STRAIGHT_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(SEVEN_OF_CLUBS);
+        add(EIGHT_OF_DIAMONDS);
+        add(NINE_OF_SPADES);
+        add(TEN_OF_HEARTS);
+        add(JACK_OF_CLUBS);
+    }});
+
+    public static Hand STRAIGHT_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(ACE_OF_HEARTS);
+        add(TWO_OF_DIAMONDS);
+        add(THREE_OF_CLUBS);
+        add(FOUR_OF_SPADES);
+        add(FIVE_OF_CLUBS);
+    }});
+
+    public static Hand FLUSH_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(TWO_OF_DIAMONDS);
+        add(THREE_OF_DIAMONDS);
+        add(FIVE_OF_DIAMONDS);
+        add(SIX_OF_DIAMONDS);
+        add(ACE_OF_DIAMONDS);
+    }});
+
+    public static Hand FLUSH_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(THREE_OF_SPADES);
+        add(TEN_OF_SPADES);
+        add(JACK_OF_SPADES);
+        add(QUEEN_OF_SPADES);
+        add(KING_OF_SPADES);
+    }});
+
+    public static Hand FULL_HOUSE_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(TWO_OF_DIAMONDS);
+        add(TWO_OF_HEARTS);
+        add(TWO_OF_SPADES);
+        add(ACE_OF_DIAMONDS);
+        add(ACE_OF_HEARTS);
+    }});
+
+    public static Hand FULL_HOUSE_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(TWO_OF_DIAMONDS);
+        add(TWO_OF_HEARTS);
+        add(TWO_OF_SPADES);
+        add(FOUR_OF_DIAMONDS);
+        add(FOUR_OF_HEARTS);
+    }});
+
+    public static Hand FOUR_OF_A_KIND_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(JACK_OF_DIAMONDS);
+        add(JACK_OF_SPADES);
+        add(JACK_OF_CLUBS);
+        add(JACK_OF_HEARTS);
+        add(FIVE_OF_CLUBS);
+    }});
+
+    public static Hand FOUR_OF_A_KIND_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(JACK_OF_DIAMONDS);
+        add(JACK_OF_SPADES);
+        add(JACK_OF_CLUBS);
+        add(JACK_OF_HEARTS);
+        add(QUEEN_OF_HEARTS);
+    }});
+
+    public static Hand STRAIGHT_FLUSH_1_HAND = new Hand(new ArrayList<Card>() {{
+        add(ACE_OF_HEARTS);
+        add(KING_OF_HEARTS);
+        add(QUEEN_OF_HEARTS);
+        add(JACK_OF_HEARTS);
+        add(TEN_OF_HEARTS);
+    }});
+
+    public static Hand STRAIGHT_FLUSH_2_HAND = new Hand(new ArrayList<Card>() {{
+        add(ACE_OF_SPADES);
+        add(TWO_OF_SPADES);
+        add(THREE_OF_SPADES);
+        add(FOUR_OF_SPADES);
+        add(FIVE_OF_SPADES);
     }});
 }

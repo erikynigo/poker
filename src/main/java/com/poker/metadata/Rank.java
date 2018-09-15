@@ -3,6 +3,9 @@ package com.poker.metadata;
 /**
  * Enum representing the possible ranks that a standard
  * card, in a standard 52-card deck, can represent.
+ * A numerical value is assigned to each Rank to be able
+ * to determine the strongest Rank quickly and objectively.
+ * Stronger Ranks will have a higher numerical value.
  *
  * @author Erik Ynigo
  */

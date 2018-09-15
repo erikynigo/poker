@@ -2,8 +2,9 @@ package com.poker.metadata;
 
 /**
  * Enum representing the possible hand-ranking categories.
- * A value is assigned to each category to be able to evaluate
- * it against other categories more easily.
+ * A numerical value is assigned to each category to be able
+ * to determine the strongest hand quickly and objectively.
+ * Stronger categories will have a higher numerical value.
  *
  * @author Erik Ynigo
  */

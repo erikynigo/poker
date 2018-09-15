@@ -13,32 +13,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ynige001 on 9/11/18.
+ * Main class, used to showcase example usage of this application, such as:
+ * hand creation, evaluator construction, evaluation api, result interpretation
+ * and printing out the result.
+ *
+ * @author Erik Ynigo
  */
 public class Main
 {
     public static void main(String[] args) throws IllegalHandException, CannotEvaluateException
     {
         // Sample usage
-        final Hand aceHighHand = new Hand(new ArrayList<Card>() {{
-            add(new Card(Rank.ACE, Suit.SPADE));
-            add(new Card(Rank.TWO, Suit.CLUB));
+        /*final Hand hand1 = new Hand(new ArrayList<Card>() {{
+            add(new Card(Rank.TWO, Suit.HEART));
             add(new Card(Rank.THREE, Suit.DIAMOND));
-            add(new Card(Rank.SEVEN, Suit.HEART));
-            add(new Card(Rank.TEN, Suit.CLUB));
+            add(new Card(Rank.FOUR, Suit.SPADE));
+            add(new Card(Rank.FIVE, Suit.CLUB));
+            add(new Card(Rank.SIX, Suit.SPADE));
+        }});*/
+
+        final Hand hand1 = new Hand(new ArrayList<Card>() {{
+            add(new Card(Rank.ACE, Suit.HEART));
+            add(new Card(Rank.KING, Suit.HEART));
+            add(new Card(Rank.QUEEN, Suit.HEART));
+            add(new Card(Rank.JACK, Suit.HEART));
+            add(new Card(Rank.TEN, Suit.HEART));
         }});
 
-        final Hand pairOfSevensHand = new Hand(new ArrayList<Card>() {{
-            add(new Card(Rank.SEVEN, Suit.CLUB));
+        final Hand hand2 = new Hand(new ArrayList<Card>() {{
+            add(new Card(Rank.THREE, Suit.CLUB));
+            add(new Card(Rank.FOUR, Suit.CLUB));
+            add(new Card(Rank.FIVE, Suit.CLUB));
+            add(new Card(Rank.SIX, Suit.CLUB));
             add(new Card(Rank.SEVEN, Suit.DIAMOND));
-            add(new Card(Rank.THREE, Suit.HEART));
-            add(new Card(Rank.TWO, Suit.SPADE));
-            add(new Card(Rank.EIGHT, Suit.CLUB));
         }});
 
         List<Hand> hands = new ArrayList<Hand>() {{
-            add(aceHighHand);
-            add(pairOfSevensHand);
+            add(hand1);
+            add(hand2);
         }};
 
         // Create evaluator
@@ -50,7 +62,20 @@ public class Main
         List<PokerHandEvaluation> winners = pokerHandEvaluator.evaluate(hands);
 
         // Print out winner
-        PokerHandEvaluation winner = winners.get(0);
-        System.out.print("Winning hand: \n" + winner.toString());
+        if (winners.size() == 1)
+        {
+            PokerHandEvaluation winner = winners.get(0);
+            System.out.println("Winning hand:\n");
+            System.out.println(winner.toString());
+        }
+        else
+        {
+            System.out.println("Tie! Split the pot between:\n");
+            for (PokerHandEvaluation winner : winners)
+            {
+                System.out.println(winner.toString()+"\n");
+            }
+
+        }
     }
 }

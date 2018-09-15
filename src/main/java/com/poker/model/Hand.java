@@ -7,7 +7,7 @@ import java.util.List;
  * that represent a hand in a card game. This class places no restrictions
  * regarding the number of cards the hand must have, or whether or not
  * duplicate cards are allowed. That task is left to whatever evaluating
- * class receives the Hand as input, so it enforces the rules for the
+ * service receives the Hand as input, so it can enforce the rules for the
  * game that it is evaluating for.
  *
  * @author Erik Ynigo

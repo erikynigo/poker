@@ -13,10 +13,12 @@ import com.poker.model.PokerHandEvaluation;
 import java.util.*;
 
 /**
- * The PokerHandEvaluator class will take two or more Hand objects,
- * and will determine the strongest hand based on standard
- * poker hand ranking. For more information on categories and
- * hand strength, see:
+ * The PokerHandEvaluator class takes a List of two or more Hand
+ * objects, evaluates them to identify the category achieved by
+ * each Hand as well astheir score, and determines the strongest
+ * hand based on standard poker hand ranking.
+ *
+ * For more information on categories and hand strength, see:
  * <a href="https://en.wikipedia.org/wiki/List_of_poker_hands">
  * List of poker hands</a>
  *
@@ -29,6 +31,20 @@ public class PokerHandEvaluator
 
     }
 
+    /**
+     * Determines the strongest Hand out of a list of Hand objects.
+     *
+     * @param hands The list of Hand objects that are to be evaluated
+     *              to determine the winning Hand.
+     *
+     * @return A List of PokerHandEvaluation objects.
+     *
+     * @throws CannotEvaluateException  Thrown when the Hands list is null or has
+     *                                  less than 2 Hands.
+     * @throws IllegalHandException     Thrown when a Hand does not meet the requirements
+     *                                  to be deemed a valid Hand, such as not having 5
+     *                                  cards, or having duplicate cards
+     */
     public List<PokerHandEvaluation> evaluate(List<Hand> hands) throws CannotEvaluateException,
         IllegalHandException
     {
@@ -56,19 +72,20 @@ public class PokerHandEvaluator
             }
         }
 
-        // Hands are valid poker hands. Store all hands of the same score together in a map, where:
-        // key is the score achieved, and
-        // value is the list containing all PokerHandEvaluation objects with the same score
+        // Hands are valid poker hands. Group Hands in a map according to their score, where:
+        //      - key is the score achieved
+        //      - value is the list containing all PokerHandEvaluation objects with the same score
         int totalHands = hands.size();
-        Map<Integer, List<PokerHandEvaluation>> scoreToEvaluationsMap = new HashMap<Integer, List<PokerHandEvaluation>>(totalHands);
+        Map<Float, List<PokerHandEvaluation>> scoreToEvaluationsMap =
+            new HashMap<Float, List<PokerHandEvaluation>>(totalHands);
 
         // Highest score will be the key to retrieve the list of winners from the map
-        Integer highestScore = 0;
+        Float highestScore = 0.0f;
 
         for (Hand hand : hands)
         {
             PokerHandEvaluation evaluation = evaluate(hand);
-            Integer score = evaluation.getScore();
+            Float score = evaluation.getScore();
 
             // New score, create list for it
             if (!scoreToEvaluationsMap.containsKey(score)) {
@@ -91,24 +108,25 @@ public class PokerHandEvaluator
     }
 
     /**
-     * Given a Hand, it will determine the highest ranking Category that the
-     * hand achieved. A transfer object is returned where it contains the
-     * Hand evaluated, the Category achieved, the highest Rank relative to
-     * the category achieved, and a unique score representing the hand that
-     * can be used to quickly compare Hands against each other.
+     * Given a Hand, this function will determine the highest ranking Category
+     * that the hand achieved. A transfer object is returned where it contains
+     * the Hand evaluated, the Category achieved, list of ordered kickers to be
+     * used as tie breakers, the category achieved, and a unique score that
+     * represents the strenght of the Hand, which can be used to compare Hands
+     * against each other.
      *
      * @param hand The Hand object to evaluate.
      *
      * @return A PokerHandEvaluation object containing the Hand evaluated, the
-     *         Category achieved, the highest Rank, and a unique score.
+     *         Category achieved, kickers to be used, and a unique score.
      */
     private PokerHandEvaluation evaluate(Hand hand)
     {
         List<Card> cards = hand.getCards();
         int totalCards = cards.size();
 
-        Map<Rank, Integer> rankFrequency = new HashMap<Rank, Integer>(totalCards);
-        Map<Suit, Integer> suitFrequency = new HashMap<Suit, Integer>(totalCards);
+        Map<Rank, List<Card>> rankFrequency = new HashMap<Rank, List<Card>>(totalCards);
+        Map<Suit, List<Card>> suitFrequency = new HashMap<Suit, List<Card>>(totalCards);
 
         // Generate frequency tables
         for (Card card : cards)
@@ -118,19 +136,25 @@ public class PokerHandEvaluator
             // the categories FOUR_OF_A_KIND and FULL_HOUSE are now possible, while
             // TWO_PAIR, STRAIGHT, and THREE_OF_A_KIND are no longer possible.
             Rank rank = card.getRank();
-            int newRankFrequency = rankFrequency.containsKey(rank) ? rankFrequency.get(rank) + 1 : 1;
-            rankFrequency.put(rank, newRankFrequency);
+            if (!rankFrequency.containsKey(rank))
+            {
+                rankFrequency.put(rank, new ArrayList<Card>(totalCards));
+            }
+            rankFrequency.get(rank).add(card);
 
             // Suit frequency can also help narrow down the possible hand categories.
             // E.g., if there is only one entry, then we know right away that the only
             // possible categories now would be FLUSH or STRAIGHT_FLUSH.
             Suit suit = card.getSuit();
-            int newSuitFrequency = suitFrequency.containsKey(suit) ? suitFrequency.get(suit) + 1 : 1;
-            suitFrequency.put(suit, newSuitFrequency);
+            if (!suitFrequency.containsKey(suit))
+            {
+                suitFrequency.put(suit, new ArrayList<Card>(totalCards));
+            }
+            suitFrequency.get(suit).add(card);
         }
 
         // Evaluate possible hands, from highest to lowest. Stop when evaluation is not
-        // null, as it will contain the highest ranked hand category the Hand contains
+        // null, as it will be the highest ranked hand category the Hand contains.
         // Note that the order of Category evaluation is of extreme importance, as later
         // evaluating functions (for weaker hands) will make assumptions that if the hand
         // was a stronger hand, it would not have reached those weaker functions.
@@ -210,16 +234,16 @@ public class PokerHandEvaluator
      * @param hand          The Hand object containing the Card list that will
      *                      be used to determine if it represents the STRAIGHT_FLUSH
      *                      category.
-     * @param rankFrequency Map associating the Rank with the number of times
-     *                      it appears in the hand.
-     * @param suitFrequency Map associating the Suit with the number of times
-     *                      it appears in the hand.
+     * @param rankFrequency Map associating the Rank with the Card objects in the
+     *                      hand that share the same Rank.
+     * @param suitFrequency Map associating the Suit with the Card objects in the
+     *                      hand that bear the same Suit.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
      *         if the Hand represents the STRAIGHT_FLUSH category, null otherwise.
      */
-    private PokerHandEvaluation evaluateStraightFlush(Hand hand, Map<Rank, Integer> rankFrequency,
-                                                      Map<Suit, Integer> suitFrequency)
+    private PokerHandEvaluation evaluateStraightFlush(Hand hand, Map<Rank, List<Card>> rankFrequency,
+        Map<Suit, List<Card>> suitFrequency)
     {
         // The fingerprint for a STRAIGHT_FLUSH hand is very particular:
         //      - 5 entries in the rank frequency map
@@ -229,12 +253,12 @@ public class PokerHandEvaluator
             return null;
         }
 
-        // Next, we need to sort the cards in ascending order, based on their rank value,
-        // and verify that the ranks are sequential.
+        // Next, we need to sort the cards in ascending order, based on their Rank
+        // value, and verify that the Card objects are sequential.
         List<Card> cards = hand.getCards();
-        sortAscending(cards);
+        sortDescending(cards);
 
-        if (!isSequential(cards))
+        if (!isSequential(cards, true))
         {
             return null;
         }
@@ -242,7 +266,7 @@ public class PokerHandEvaluator
         PokerHandEvaluation evaluation = new PokerHandEvaluation();
         evaluation.hand = hand;
         evaluation.category = Category.STRAIGHT_FLUSH;
-        evaluation.highestRank = cards.get(cards.size() - 1).getRank();
+        evaluation.kickers = cards;
 
         return evaluation;
     }
@@ -253,13 +277,13 @@ public class PokerHandEvaluator
      * @param hand          The Hand object containing the Card list that will
      *                      be used to determine if it represents the FOUR_OF_A_KIND
      *                      category.
-     * @param rankFrequency Map associating the Rank with the number of times
-     *                      it appears in the hand.
+     * @param rankFrequency Map associating the Rank with the Card objects in the
+     *                      hand that share the same Rank.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
      *         if the Hand represents the FOUR_OF_A_KIND category, null otherwise.
      */
-    private PokerHandEvaluation evaluateFourOfAKind(Hand hand, Map<Rank, Integer> rankFrequency)
+    private PokerHandEvaluation evaluateFourOfAKind(Hand hand, Map<Rank, List<Card>> rankFrequency)
     {
         // The fingerprint for a FOUR_OF_A_KIND hand is 2 entries in the rank frequency map.
         // This fingerprint is not unique, as the following hands have it:
@@ -270,31 +294,36 @@ public class PokerHandEvaluator
             return null;
         }
 
-        // Search for the rank with a frequency of 4. If it's not found, this
-        // is a FULL_HOUSE hand.
-        Rank highestRank = null;
+        // Find four of a kind
+        List<Card> quartetList = new ArrayList<Card>(4);
+        Card remainingCard = null;
 
-        for (Map.Entry<Rank, Integer> entry : rankFrequency.entrySet())
+        for (Map.Entry<Rank, List<Card>> entry : rankFrequency.entrySet())
         {
-            Rank rank = entry.getKey();
-            int frequency = entry.getValue();
+            List<Card> sameRankCards = entry.getValue();
+            int frequency = sameRankCards.size();
 
-            if (frequency == 4)
+            // This is a full house hand, abort.
+            if (frequency == 2 || frequency == 3)
             {
-                highestRank = rank;
-                break;
+                return null;
+            }
+            else if (frequency == 4)
+            {
+                quartetList.addAll(sameRankCards);
+            }
+            else
+            {
+                remainingCard = sameRankCards.get(0);
             }
         }
 
-        if (highestRank == null)
-        {
-            return null;
-        }
+        quartetList.add(remainingCard);
 
         PokerHandEvaluation evaluation = new PokerHandEvaluation();
         evaluation.hand = hand;
         evaluation.category = Category.FOUR_OF_A_KIND;
-        evaluation.highestRank = highestRank;
+        evaluation.kickers = quartetList;
 
         return evaluation;
     }
@@ -305,13 +334,13 @@ public class PokerHandEvaluator
      * @param hand          The Hand object containing the Card list that will
      *                      be used to determine if it represents the FULL_HOUSE
      *                      category.
-     * @param rankFrequency Map associating the Rank with the number of times
-     *                      it appears in the hand.
+     * @param rankFrequency Map associating the Rank with the Card objects in the
+     *                      hand that share the same Rank.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
      *         if the Hand represents the FULL_HOUSE category, null otherwise.
      */
-    private PokerHandEvaluation evaluateFullHouse(Hand hand, Map<Rank, Integer> rankFrequency)
+    private PokerHandEvaluation evaluateFullHouse(Hand hand, Map<Rank, List<Card>> rankFrequency)
     {
         // The fingerprint for a FULL_HOUSE hand is 2 entries in the rank frequency map.
         // This fingerprint is not unique, as the following hands have it:
@@ -324,43 +353,48 @@ public class PokerHandEvaluator
             return null;
         }
 
-        // Verify that the rank frequency of a card is not 4, otherwise this hand
-        // would be a FOUR_OF_A_KIND.
-        Rank highestRank = null;
-
-        for (Map.Entry<Rank, Integer> entry : rankFrequency.entrySet())
-        {
-            Rank rank = entry.getKey();
-            int frequency = entry.getValue();
-
-            if (frequency == 3)
-            {
-                highestRank = rank;
-                break;
-            }
-        }
-
         PokerHandEvaluation evaluation = new PokerHandEvaluation();
         evaluation.hand = hand;
         evaluation.category = Category.FULL_HOUSE;
-        evaluation.highestRank = highestRank;
+
+        // Find triple and pair
+        List<Card> tripleList = new ArrayList<Card>(3);
+        List<Card> pairList = new ArrayList<Card>(2);
+
+        for (Map.Entry<Rank, List<Card>> entry : rankFrequency.entrySet())
+        {
+            List<Card> sameRankCards = entry.getValue();
+            int frequency = sameRankCards.size();
+
+            if (frequency == 3)
+            {
+                tripleList.addAll(sameRankCards);
+            }
+            else
+            {
+                pairList.addAll(sameRankCards);
+            }
+        }
+
+        tripleList.addAll(pairList);
+        evaluation.kickers = tripleList;
 
         return evaluation;
     }
 
     /**
-     * Determines whether or not the Hand represents the category FLUSH.
+     * Determines whether or not the Hand represents the category FULL_HOUSE.
      *
      * @param hand          The Hand object containing the Card list that will
-     *                      be used to determine if it represents the FLUSH
+     *                      be used to determine if it represents the FULL_HOUSE
      *                      category.
-     * @param suitFrequency Map associating the Suit with the number of times
-     *                      it appears in the hand.
+     * @param suitFrequency Map associating the Suit with the Card objects in the
+     *                      hand that bear the same Suit.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
-     *         if the Hand represents the FLUSH category, null otherwise.
+     *         if the Hand represents the FULL_HOUSE category, null otherwise.
      */
-    private PokerHandEvaluation evaluateFlush(Hand hand, Map<Suit, Integer> suitFrequency)
+    private PokerHandEvaluation evaluateFlush(Hand hand, Map<Suit, List<Card>> suitFrequency)
     {
         // A FLUSH should have one entry in the suit frequency map only,
         // as all cards must be of the same suit.
@@ -369,10 +403,12 @@ public class PokerHandEvaluator
             return null;
         }
 
+        sortDescending(hand.getCards());
+
         PokerHandEvaluation evaluation = new PokerHandEvaluation();
         evaluation.hand = hand;
         evaluation.category = Category.FLUSH;
-        evaluation.highestRank = findHighestRank(hand.getCards());;
+        evaluation.kickers = hand.getCards();
 
         return evaluation;
     }
@@ -383,13 +419,13 @@ public class PokerHandEvaluator
      * @param hand          The Hand object containing the Card list that will
      *                      be used to determine if it represents the STRAIGHT
      *                      category.
-     * @param rankFrequency Map associating the Rank with the number of times
-     *                      it appears in the hand.
+     * @param rankFrequency Map associating the Rank with the Card objects in the
+     *                      hand that share the same Rank.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
      *         if the Hand represents the STRAIGHT category, null otherwise.
      */
-    private PokerHandEvaluation evaluateStraight(Hand hand, Map<Rank, Integer> rankFrequency)
+    private PokerHandEvaluation evaluateStraight(Hand hand, Map<Rank, List<Card>> rankFrequency)
     {
         // A STRAIGHT must have 5 different entries in the rank frequency table,
         // as there are no pairs involved.
@@ -398,20 +434,65 @@ public class PokerHandEvaluator
             return null;
         }
 
-        // Next, we need to sort the cards in ascending order, based on their rank value,
-        // and verify that the ranks are sequential.
+        // Next, we need to sort the cards in descending order (so they can also be used as
+        // the kickers) based on their rank value, and verify that the ranks are sequential.
         List<Card> cards = hand.getCards();
-        sortAscending(cards);
 
-        if (!isSequential(cards))
+        // Straights have a special case, where the ACE can either start a straight
+        // as 1, or finish it after KING. To handle this, let's see if there is an
+        // ACE in the hand, extract it, and sort the remaining 4 cards. Then we can
+        // check if an ace can be inserted at the beggining or at the end of the
+        // sorted list of cards
+        Card ace = null;
+        Iterator<Card> iterator = cards.iterator();
+        while (iterator.hasNext())
         {
+            Card card = iterator.next();
+            if (card.getRank() == Rank.ACE)
+            {
+                ace = card;
+                iterator.remove();
+                break;
+            }
+        }
+
+        sortDescending(cards);
+
+        if (!isSequential(cards, true))
+        {
+            // Reinsert the ace if removed
+            if (ace != null)
+            {
+                cards.add(ace);
+            }
+
             return null;
+        }
+
+        if (ace != null)
+        {
+            // Ace can finish a straight
+            if (cards.get(0).getRank() == Rank.KING)
+            {
+                cards.add(0, ace);
+            }
+            // Ace can start a straight
+            else if (cards.get(cards.size() - 1).getRank() == Rank.TWO)
+            {
+                cards.add(ace);
+            }
+            // Not really a straight as the ace that we removed is not in sequence
+            else
+            {
+                cards.add(ace);
+                return null;
+            }
         }
 
         PokerHandEvaluation evaluation = new PokerHandEvaluation();
         evaluation.hand = hand;
         evaluation.category = Category.STRAIGHT;
-        evaluation.highestRank = cards.get(cards.size() - 1).getRank();
+        evaluation.kickers = cards;
 
         return evaluation;
     }
@@ -422,13 +503,13 @@ public class PokerHandEvaluator
      * @param hand          The Hand object containing the Card list that will
      *                      be used to determine if it represents the THREE_OF_A_KIND
      *                      category.
-     * @param rankFrequency Map associating the Rank with the number of times
-     *                      it appears in the hand.
+     * @param rankFrequency Map associating the Rank with the Card objects in the
+     *                      hand that share the same Rank.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
      *         if the Hand represents the THREE_OF_A_KIND category, null otherwise.
      */
-    private PokerHandEvaluation evaluateThreeOfAKind(Hand hand, Map<Rank, Integer> rankFrequency)
+    private PokerHandEvaluation evaluateThreeOfAKind(Hand hand, Map<Rank, List<Card>> rankFrequency)
     {
         // The fingerprint for a THREE_OF_A_KIND hand is 3 entries in the rank frequency map.
         // However, this fingerprint is not unique, as the following hands have it:
@@ -439,32 +520,37 @@ public class PokerHandEvaluator
             return null;
         }
 
-        // Verify that the rank frequency of a card is 3, otherwise this hand
-        // would be a TWO_PAIR.
-        Rank highestRank = null;
+        PokerHandEvaluation evaluation = new PokerHandEvaluation();
+        evaluation.hand = hand;
+        evaluation.category = Category.THREE_OF_A_KIND;
 
-        for (Map.Entry<Rank, Integer> entry : rankFrequency.entrySet())
+        // Find triple
+        List<Card> tripleList = new ArrayList<Card>(3);
+        List<Card> remainingCards = new ArrayList<Card>(2);
+
+        for (Map.Entry<Rank, List<Card>> entry : rankFrequency.entrySet())
         {
-            Rank rank = entry.getKey();
-            int frequency = entry.getValue();
+            List<Card> sameRankCards = entry.getValue();
+            int frequency = sameRankCards.size();
 
             // This is a TWO_PAIR hand, abort
             if (frequency == 2)
             {
                 return null;
             }
-
-            if (frequency == 3)
+            else if (frequency == 3)
             {
-                highestRank = rank;
-                break;
+                tripleList.addAll(sameRankCards);
+            }
+            else
+            {
+                remainingCards.addAll(sameRankCards);
             }
         }
 
-        PokerHandEvaluation evaluation = new PokerHandEvaluation();
-        evaluation.hand = hand;
-        evaluation.category = Category.THREE_OF_A_KIND;
-        evaluation.highestRank = highestRank;
+        sortDescending(remainingCards);
+        tripleList.addAll(remainingCards);
+        evaluation.kickers = tripleList;
 
         return evaluation;
     }
@@ -475,13 +561,13 @@ public class PokerHandEvaluator
      * @param hand          The Hand object containing the Card list that will
      *                      be used to determine if it represents the TWO_PAIR
      *                      category.
-     * @param rankFrequency Map associating the Rank with the number of times
-     *                      it appears in the hand.
+     * @param rankFrequency Map associating the Rank with the Card objects in the
+     *                      hand that share the same Rank.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
      *         if the Hand represents the TWO_PAIR category, null otherwise.
      */
-    private PokerHandEvaluation evaluateTwoPair(Hand hand, Map<Rank, Integer> rankFrequency)
+    private PokerHandEvaluation evaluateTwoPair(Hand hand, Map<Rank, List<Card>> rankFrequency)
     {
         // The fingerprint for a TWO_PAIR hand is 3 entries in the rank frequency map.
         // This fingerprint is not unique, as the following hands have it:
@@ -494,24 +580,32 @@ public class PokerHandEvaluator
             return null;
         }
 
-        Rank highestRank = null;
-
-        for (Map.Entry<Rank, Integer> entry : rankFrequency.entrySet())
-        {
-            Rank rank = entry.getKey();
-            int frequency = entry.getValue();
-            boolean isPair = frequency > 1;
-
-            if (isPair && (highestRank == null || rank.getValue() > highestRank.getValue()))
-            {
-                highestRank = rank;
-            }
-        }
-
         PokerHandEvaluation evaluation = new PokerHandEvaluation();
         evaluation.hand = hand;
         evaluation.category = Category.TWO_PAIR;
-        evaluation.highestRank = highestRank;
+
+        // Find pairs
+        List<Card> pairList = new ArrayList<Card>(4);
+        Card remainingCard = null;
+
+        for (Map.Entry<Rank, List<Card>> entry : rankFrequency.entrySet())
+        {
+            List<Card> sameRankCards = entry.getValue();
+            boolean isPair = sameRankCards.size() == 2;
+
+            if (isPair)
+            {
+                pairList.addAll(sameRankCards);
+            }
+            else
+            {
+                remainingCard = sameRankCards.get(0);
+            }
+        }
+
+        sortDescending(pairList);
+        pairList.add(remainingCard);
+        evaluation.kickers = pairList;
 
         return evaluation;
     }
@@ -522,13 +616,13 @@ public class PokerHandEvaluator
      * @param hand          The Hand object containing the Card list that will
      *                      be used to determine if it represents the ONE_PAIR
      *                      category.
-     * @param rankFrequency Map associating the Rank with the number of times
-     *                      it appears in the hand.
+     * @param rankFrequency Map associating the Rank with the Card objects in the
+     *                      hand that share the same Rank.
      *
      * @return A PokerHandEvaluation object containing the results of the evaluation
      *         if the Hand represents the ONE_PAIR category, null otherwise.
      */
-    private PokerHandEvaluation evaluateOnePair(Hand hand, Map<Rank, Integer> rankFrequency)
+    private PokerHandEvaluation evaluateOnePair(Hand hand, Map<Rank, List<Card>> rankFrequency)
     {
         // The fingerprint of a ONE_PAIR hand is 4 entries in the rankFrequency map.
         // E.g., the hand [3][3][7][K][A] will have three entries with a frequency of 1,
@@ -544,17 +638,30 @@ public class PokerHandEvaluator
         evaluation.category = Category.ONE_PAIR;
 
         // Find pair
-        for (Map.Entry<Rank, Integer> entry : rankFrequency.entrySet())
+        List<Card> pairList = null;
+        List<Card> remainingCards = new ArrayList<Card>(3);
+
+        for (Map.Entry<Rank, List<Card>> entry : rankFrequency.entrySet())
         {
-            Rank rank = entry.getKey();
-            int frequency = entry.getValue();
+            List<Card> sameRankCards = entry.getValue();
+            int frequency = sameRankCards.size();
 
             if (frequency == 2)
             {
-                evaluation.highestRank = rank;
-                break;
+                pairList = entry.getValue();
+            }
+            else
+            {
+                // We know there is only one element in each other rank,
+                // otherwise the signature would be different and would
+                // not have hit this function.
+                remainingCards.add(sameRankCards.get(0));
             }
         }
+
+        sortDescending(remainingCards);
+        pairList.addAll(remainingCards);
+        evaluation.kickers = pairList;
 
         return evaluation;
     }
@@ -575,13 +682,14 @@ public class PokerHandEvaluator
         PokerHandEvaluation evaluation = new PokerHandEvaluation();
         evaluation.hand = hand;
         evaluation.category = Category.HIGH_CARD;
-        evaluation.highestRank = findHighestRank(hand.getCards());
-
 
         // If evaluation  made it all the way to this function, there is
         // no other Category than HIGH_CARD. In this case, we will sort
-        // the cards in descending order, add
-
+        // the cards in descending order and add them as kickers.
+        // Kickers determine the outcome when two hands are of the same
+        // category.
+        sortDescending(hand.getCards());
+        evaluation.kickers = hand.getCards();
 
         return evaluation;
     }
@@ -591,20 +699,24 @@ public class PokerHandEvaluator
      * determines whether or not the ranks are in sequence with no
      * value gaps between them.
      *
-     * @param cards The list of Card objects sorted in ascending order.
+     * @param cards      The list of Card objects sorted in ascending order.
+     * @param descending Whether or not the sequence is in descending
+     *                   or ascending order
      *
      * @return True if the ranks in the list are sequential with no
      *         gaps between them, false otherwise.
      */
-    private boolean isSequential(List<Card> cards)
+    private boolean isSequential(List<Card> cards, boolean descending)
     {
-        for (int i = 0; i < cards.size() - 2; i++)
+        int delta = descending ? 1 : -1;
+
+        for (int i = 0; i < cards.size() - 1; i++)
         {
             Card curHand = cards.get(i);
             Card nextHand = cards.get(i + 1);
 
             // If there is a gap, this is not a straight
-            if (curHand.getRank().getValue() != nextHand.getRank().getValue() - 1)
+            if (curHand.getRank().getValue() != nextHand.getRank().getValue() + delta)
             {
                 return false;
             }
@@ -642,33 +754,6 @@ public class PokerHandEvaluator
         }
 
         return false;
-    }
-
-    /**
-     * Given a list of Card objects, it iterates through them
-     * to find the Card with the highest rank among them.
-     *
-     * @param cards The list of Card objects from where the highest
-     *              rank needs to be identified from.
-     *
-     * @return The highest Rank found in the Card list.
-     *
-     */
-    private Rank findHighestRank(List<Card> cards)
-    {
-        Rank highestRank = null;
-
-        for (Card card : cards)
-        {
-            Rank rank = card.getRank();
-
-            if (highestRank == null || rank.getValue() > highestRank.getValue())
-            {
-                highestRank = rank;
-            }
-        }
-
-        return highestRank;
     }
 
     /**
