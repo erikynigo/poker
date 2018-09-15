@@ -24,20 +24,12 @@ public class Main
     public static void main(String[] args) throws IllegalHandException, CannotEvaluateException
     {
         // Sample usage
-        /*final Hand hand1 = new Hand(new ArrayList<Card>() {{
+        final Hand hand1 = new Hand(new ArrayList<Card>() {{
             add(new Card(Rank.TWO, Suit.HEART));
             add(new Card(Rank.THREE, Suit.DIAMOND));
             add(new Card(Rank.FOUR, Suit.SPADE));
             add(new Card(Rank.FIVE, Suit.CLUB));
             add(new Card(Rank.SIX, Suit.SPADE));
-        }});*/
-
-        final Hand hand1 = new Hand(new ArrayList<Card>() {{
-            add(new Card(Rank.ACE, Suit.HEART));
-            add(new Card(Rank.KING, Suit.HEART));
-            add(new Card(Rank.QUEEN, Suit.HEART));
-            add(new Card(Rank.JACK, Suit.HEART));
-            add(new Card(Rank.TEN, Suit.HEART));
         }});
 
         final Hand hand2 = new Hand(new ArrayList<Card>() {{
